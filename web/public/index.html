@@ -91,18 +91,19 @@
             
             const traces = [
                 {
-                    name: 'Temperature (°C)',
+                    name: 'Temperature (°F)',
                     x: timestamps,
-                    y: data.map(d => d.temperature_c),
+                    y: data.map(d => (d.temperature_c * 9/5) + 32),
                     type: 'scatter',
+                    yaxis: 'y1',
                     line: { color: '#FF5722' }
                 },
                 {
-                    name: 'Dew Point (°C)',
+                    name: 'Dew Point (°F)',
                     x: timestamps,
-                    y: data.map(d => d.dew_point_c),
+                    y: data.map(d => (d.dew_point_c * 9/5) + 32),
                     type: 'scatter',
-                    yaxis: 'y2',
+                    yaxis: 'y1',
                     line: { color: '#00BCD4' }
                 },
                 {
@@ -110,7 +111,7 @@
                     x: timestamps,
                     y: data.map(d => d.humidity_rh),
                     type: 'scatter',
-                    yaxis: 'y3',
+                    yaxis: 'y1',
                     line: { color: '#2196F3' }
                 },
                 {
@@ -118,7 +119,7 @@
                     x: timestamps,
                     y: data.map(d => d.co2),
                     type: 'scatter',
-                    yaxis: 'y4',
+                    yaxis: 'y2',
                     line: { color: '#4CAF50' }
                 },
                 {
@@ -126,7 +127,7 @@
                     x: timestamps,
                     y: data.map(d => d.vpd),
                     type: 'scatter',
-                    yaxis: 'y5',
+                    yaxis: 'y3',
                     line: { color: '#9C27B0' }
                 },
                 {
@@ -134,7 +135,7 @@
                     x: timestamps,
                     y: data.map(d => d.air_pressure / 1000),
                     type: 'scatter',
-                    yaxis: 'y6',
+                    yaxis: 'y4',
                     line: { color: '#795548' }
                 }
             ];
@@ -146,52 +147,33 @@
                 xaxis: {
                     domain: [0.1, 0.9],
                     title: 'Time',
-                    tickangle: 45
+                    tickangle: 45,
+                    nticks: 8
                 },
                 yaxis: { 
-                    title: 'Temperature (°C)',
-                    titlefont: { color: '#FF5722' },
-                    tickfont: { color: '#FF5722' }
+                    titlefont: { color: '#000000' },
+                    tickfont: { color: '#000000' }
                 },
                 yaxis2: {
-                    title: 'Dew Point (°C)',
-                    titlefont: { color: '#00BCD4' },
-                    tickfont: { color: '#00BCD4' },
-                    overlaying: 'y',
-                    side: 'left',
-                    position: 0.05
-                },
-                yaxis3: {
-                    title: 'Humidity (%)',
-                    titlefont: { color: '#2196F3' },
-                    tickfont: { color: '#2196F3' },
-                    overlaying: 'y',
-                    side: 'right',
-                    position: 0.95
-                },
-                yaxis4: {
-                    title: 'CO₂ (ppd)',
                     titlefont: { color: '#4CAF50' },
                     tickfont: { color: '#4CAF50' },
                     overlaying: 'y',
                     side: 'right',
-                    position: 0.85
+                    position: 0.95
                 },
-                yaxis5: {
-                    title: 'VPD (kPa)',
-                    titlefont: { color: '#9C27B0' },
-                    tickfont: { color: '#9C27B0' },
+                yaxis3: {
+                    titlefont: { color: '#000000' },
+                    tickfont: { color: '#000000' },
                     overlaying: 'y',
                     side: 'left',
-                    position: 0.15
+                    position: 0.05
                 },
-                yaxis6: {
-                    title: 'Air Pressure (kPa)',
-                    titlefont: { color: '#795548' },
-                    tickfont: { color: '#795548' },
+                yaxis4: {
+                    titlefont: { color: '#000000' },
+                    tickfont: { color: '#000000' },
                     overlaying: 'y',
                     side: 'right',
-                    position: 0.75
+                    position: 0.90
                 }
             };
             
