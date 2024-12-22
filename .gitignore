@@ -1,0 +1,5 @@
+.env
+pulse_api.log
+pulse_data.db
+node_modules
+__pycache__

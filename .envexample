@@ -1,0 +1,8 @@
+# Pulse API Configuration
+PULSE_DEVICE_ID=
+PULSE_API_KEY=
+
+# Optional Configuration
+DATA_DIRECTORY=pulse_data
+LOG_FILE=pulse_api.log
+FETCH_INTERVAL=60  # in seconds 
