@@ -7,6 +7,8 @@ import os
 from typing import Optional
 from dotenv import load_dotenv
 from database import Database
+from arduino_controller import ArduinoController
+import threading
 
 class PulseMonitor:
     def __init__(self):
@@ -16,6 +18,9 @@ class PulseMonitor:
         
         # Load environment variables
         load_dotenv()
+        
+        # Set database path
+        self.db_path = os.getenv('DB_PATH', '../pulse_data.db')
         
         # Debug logging for environment variables
         self.logger.info("Environment variables after loading:")
@@ -38,6 +43,17 @@ class PulseMonitor:
             "x-api-key": api_key,
             "Accept": "application/json"
         }
+
+        # Initialize Arduino controller
+        try:
+            self.arduino = ArduinoController(db_path=self.db_path)
+            self.logger.info("Arduino controller initialized successfully")
+        except Exception as e:
+            self.logger.error(f"Failed to initialize Arduino controller: {str(e)}")
+            self.arduino = None
+
+        # Set Arduino polling interval (5 seconds)
+        self.arduino_interval = 5
 
     def setup_logging(self):
         # Configure logging for API interactions
@@ -88,15 +104,40 @@ class PulseMonitor:
         except Exception as e:
             self.logger.error(f"Error saving data: {str(e)}")
 
-    def run(self):
-        self.logger.info("Starting Pulse monitoring")
-        
+    def arduino_loop(self):
+        """Separate loop for Arduino polling"""
         while True:
-            data = self.fetch_data()
-            self.save_data(data)
-            
-            # Use configured fetch interval
-            time.sleep(self.fetch_interval)
+            try:
+                if self.arduino:
+                    arduino_data = self.arduino.get_sensor_data()
+                    if arduino_data:
+                        self.logger.debug(f"Arduino readings: {arduino_data}")
+                time.sleep(self.arduino_interval)
+            except Exception as e:
+                self.logger.error(f"Error in Arduino loop: {str(e)}")
+                time.sleep(1)  # Short wait before retry
+
+    def pulse_loop(self):
+        """Separate loop for Pulse API polling"""
+        while True:
+            try:
+                data = self.fetch_data()
+                self.save_data(data)
+                time.sleep(self.fetch_interval)
+            except Exception as e:
+                self.logger.error(f"Error in Pulse loop: {str(e)}")
+                time.sleep(5)
+
+    def run(self):
+        """Start separate threads for Pulse and Arduino polling"""
+        # Start Arduino polling thread
+        arduino_thread = threading.Thread(target=self.arduino_loop, daemon=True)
+        arduino_thread.start()
+        self.logger.info("Started Arduino polling thread")
+
+        # Run Pulse polling in main thread
+        self.logger.info("Starting Pulse polling loop")
+        self.pulse_loop()
 
 if __name__ == "__main__":
     monitor = PulseMonitor()

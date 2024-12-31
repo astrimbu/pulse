@@ -28,7 +28,7 @@ Edit `.env` file with your settings:
 1. Start the Python data collector:
    ```bash
    cd server
-   python pulse_monitor.py
+   python3 pulse_monitor.py
    ```
 2. In a new terminal, start the web server:
    ```bash
